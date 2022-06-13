@@ -28,6 +28,7 @@ char *readMess(int sockId)
     {
         recv(sockId, &c, 1, 0);
         *(message + i) = c;
+        printf("%c",*(message + i));
         i++;
         message = realloc(message, (i + 1) * sizeof(char));
     }
@@ -47,7 +48,7 @@ int createServer(struct sockaddr_in *sa)
     int berr = bind(sd, (struct sockaddr *)sa, sizeof(*sa));
     if (berr == -1)
     {
-        perror("erreur de configuration de la socjet serveur");
+        perror("erreur de configuration de la socket serveur");
         exit(0);
     }
 
@@ -89,7 +90,7 @@ void *threadEcho(void *agrs)
     int *socketClient = (int *)agrs;
     char *message = readMess(*socketClient);
     printf("%s\n", message);
-    sendMess(*socketClient, message);
+    //sendMess(*socketClient, message);
     close(*socketClient);
 }
 
@@ -116,6 +117,7 @@ void mainServeurEcho(int port)
             perror("Connection refusé");
             exit(EXIT_FAILURE);
         }
+        printf("%d\n",socClient);
         pthread_create(tid, NULL, threadEcho, &socClient);
         pthread_join(*tid, NULL);
     }

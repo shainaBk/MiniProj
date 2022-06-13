@@ -70,7 +70,9 @@ int main(int argc, char **argv)
     int port = atoi(*(argv + 1));
     char *ip = *(argv + 2);
     int sd = connecToServer(ip, port);
-    sendMess(sd, "Hello");
+    sendMess(sd, "BITCH");
+
+    //coté client
     char *messageEcho = readMess(sd);
     printf("%s\n", messageEcho);
 }

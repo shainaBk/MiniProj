@@ -24,7 +24,7 @@ public class Client {
          * 127.0.0.1 est l'adresse local de la machine
          */
        
-         clientSocket = new Socket("127.0.0.1",8082);//5000
+         clientSocket = new Socket("127.0.0.1",8081);//5000
    
          //flux pour envoyer
          out = new PrintWriter(clientSocket.getOutputStream());
@@ -40,7 +40,8 @@ public class Client {
                     msg = sc.nextLine();
                     out.println(msg);
                     out.flush();
-                }
+                    out.close();
+               }
              }
          });
          envoyer.start();

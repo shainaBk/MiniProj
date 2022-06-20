@@ -67,12 +67,19 @@ int main(int argc, char **argv)
         printf("\n");
         exit(0);
     }
-    int port = atoi(*(argv + 1));
-    char *ip = *(argv + 2);
-    int sd = connecToServer(ip, port);
-    sendMess(sd, "BITCH");
+    while (1){
+        char * input = (char*) malloc(sizeof(char)*128);
+        int port = atoi(*(argv + 1));
+        char *ip = *(argv + 2);
+        int sd = connecToServer(ip, port);
+   
+        printf("ecrire le message: ");
+        scanf("%s",input);
+        sendMess(sd, input);
 
-    //coté client
-    char *messageEcho = readMess(sd);
-    printf("%s\n", messageEcho);
+        //coté client
+        /*char *messageEcho = readMess(sd);
+        printf("%s\n", messageEcho);*/
+    }
+  
 }

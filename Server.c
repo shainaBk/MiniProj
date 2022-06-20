@@ -87,6 +87,7 @@ int socClient = accept(sd, (struct sockaddr*)sa, sizeof(sa));
 
 void *threadEcho(void *agrs)
 {
+    printf("Test");
     int *socketClient = (int *)agrs;
     char *message = readMess(*socketClient);
     printf("%s\n", message);

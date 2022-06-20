@@ -8,6 +8,43 @@
 #include <string.h>
 #include <unistd.h>
 
+struct Message{
+    char *msg;
+    int size;
+};
+typedef struct Message message;
+
+message *readMess(int sockId){
+    message * mess = (message*)malloc(sizeof(message));
+    mess->msg = (char *)malloc(sizeof(char));
+    mess->size = 0;
+
+    char c = '0';
+    int i = 0;
+
+    while (c != '\0')
+    {
+        mess->size++;
+        recv(sockId, &c, 1, 0);
+        *(mess->msg + i) = c;
+        i++;
+        mess->msg = realloc(mess->msg, (i + 1) * sizeof(char));
+    }
+    *(mess->msg + i) = '\0';
+    return mess;
+}
+
+char * readMessReverse(char * Msg, int taille){
+    int i;
+    int cpt =0;
+
+    char *message = (char *)malloc(sizeof(char)*taille);
+    for(i=taille-2 ; i>=0 ; i--){
+        *(message+cpt) = (*(Msg+i));
+        cpt++;
+    }
+    return message;
+}
 int sendMess(int sockId, char *query)
 {
     int envoie = send(sockId, query, strlen(query) + 1, 0);
@@ -18,24 +55,6 @@ int sendMess(int sockId, char *query)
     }
     return envoie;
 }
-
-char *readMess(int sockId)
-{
-    char *message = (char *)malloc(sizeof(char));
-    char c = '0';
-    int i = 0;
-    while (c != '\0')
-    {
-        recv(sockId, &c, 1, 0);
-        *(message + i) = c;
-        printf("%c",*(message + i));
-        i++;
-        message = realloc(message, (i + 1) * sizeof(char));
-    }
-    *(message + i) = '\0';
-    return message;
-}
-
 int createServer(struct sockaddr_in *sa)
 {
     int sd = socket(PF_INET, SOCK_STREAM, 0);
@@ -84,14 +103,20 @@ int socClient = accept(sd, (struct sockaddr*)sa, sizeof(sa));
 // threads = (pthread_t *) malloc(sizeof(pthread_t));
 // pthread_create((threads), NULL, createConnection, sa);
 // }
-
 void *threadEcho(void *agrs)
 {
-    printf("Test");
     int *socketClient = (int *)agrs;
-    char *message = readMess(*socketClient);
-    printf("%s\n", message);
-    //sendMess(*socketClient, message);
+    char *messageReverse; 
+    while(1){
+        message *mess = (message*)malloc(sizeof(message));
+        mess=readMess(*socketClient);
+        char *message = (char *)malloc(sizeof(char)*mess->size);
+        message = mess->msg;
+        printf("%s\n",message);
+        messageReverse = readMessReverse(message,mess->size);
+        printf("%s\n",messageReverse);
+        //sendMess(*socketClient, message);
+    }
     close(*socketClient);
 }
 

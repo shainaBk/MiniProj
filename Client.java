@@ -30,18 +30,19 @@ public class Client {
          out = new PrintWriter(clientSocket.getOutputStream());
          //flux pour recevoir
          //in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-   
+
          Thread envoyer = new Thread(new Runnable() {
-             String msg;
+             String msg = null;
               @Override
               public void run() {
-               while(true){
-                    System.out.println("entrez votre message: ");
-                    msg = sc.nextLine();
-                    out.println(msg);
-                    out.flush();
-                    out.close();
-               }
+               do{
+                  System.out.println("entrez votre message: ");
+                  msg = sc.nextLine();
+                  out.write(msg+'\0');
+                  out.flush();
+               }while(!msg.equalsIgnoreCase("OUT"));
+               System.out.println("sortie");
+               out.close();   
              }
          });
          envoyer.start();
